@@ -69,17 +69,28 @@ plt.tight_layout() # Adjust layout to prevent labels overlapping
 plt.show()
 ```
 *output*
-![Sample Images](images/class_distribution.png)
+![Trafic Sign Class Distribution](images/class_distribution.png)
 
 ## Data Preprocessing
 Key preprocessing steps included are:
 - **Data Balancing:**
 To prevent class bias, the dataset was balanced by undersampling an equal number of images from each class, based on the least number of classes which was *210*.
-- **Image Resizing and Normalization:**
+*Undersampling the dataset*
+```python
+insert code
+```
+- **Image Resizing and Normalisation:**
 After taking the mean of the dimensions of all the images in the dataset, every image was resized to a uniform dimension of 50×50 pixels. Pixel values were then normalized by dividing by 255 to scale them between 0 and 1.
+*Resizing and normalising images*
+```python
+insert code
+```
 - **Train-Test Split:**
 An 80/20 split was performed to create training and validation sets.
-
+*splitting dataset for training*
+```python
+insert code
+```
 
 ## Model Architectures
 Two CNN models were developed for this classification task. Both models share a similar pipeline consisting of convolutional layers, pooling layers, dropout layers for regularization, and dense layers for final classification. The details of each are outlined below.
@@ -115,36 +126,36 @@ model.add(Dense(43, activation='softmax'))
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 ```
-*output: Architecture Summary:*
+*Architecture Summary for Model 1:*
 
-![Sample Images](images/2_model1_summary.png)
-
-
-| Layer Type | Output Shape | Parameters | 
-| Conv2D (64 filters, 3×3, same padding) | (50, 50, 64) | 1,792 | 
-| MaxPooling2D (2×2) | (25, 25, 64) | 0 | 
-| Dropout (0.5) | (25, 25, 64) | 0 | 
-| Conv2D (64 filters, 3×3) | (23, 23, 64) | 36,928 | 
-| MaxPooling2D (2×2) | (11, 11, 64) | 0 | 
-| Dropout (0.5) | (11, 11, 64) | 0 | 
-| Flatten | (7744,) | 0 | 
-| Dense (128 neurons, ReLU) | (128,) | 991,360 | 
-| Dropout (0.5) | (128,) | 0 | 
-| Dense (43 neurons, Softmax) | (43,) | 5,547 | 
+![Architecture Summary (Model 1)](images/2_model1_summary.png)
 
 
 Results:
 - Validation Accuracy: Approximately 98.45%.
 - Similar convergence behavior was observed with a higher initial loss that quickly decreased.
-Insert evaluation graphs for Model 2 here:
-- Model 2 Loss Curve
-- Model 2 Accuracy Curve
-- Model 2 Confusion Matrix
+
+*Classification Report (Model 1)*
+
+|      | precision | recall | f1-score | support |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+| accuracy |    |    | 0.98 | 1806 |
+| macro avg | 0.99 | 0.99 | 0.99 | 1806 |
+| weighted avg | 0.99 | 0.98 | 0.98 | 1806 |
 
 
 
+![Loss and Validation Plots (Model 1)](images/3_M1_LnV_plots.png)
+*Model 1 Loss and Accuracy Plots*
 
-Model 1 (Model2)
+
+
+![Confusion Matrix (Model 1)](images/4_model1_CM.png)
+*Model 1 Confusion Matrix*
+
+
+
+Model 2 (Model2)
 Architecture Details:
 - Input:
 Image shape of (50, 50, 3).
@@ -162,6 +173,9 @@ Code Snippet for Model 1
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Dropout, Flatten, Dense
 
+**code snippet for Model2**
+
+```python
 model2 = Sequential()
 model2.add(Conv2D(filters=32, kernel_size=(5,5), activation='relu', input_shape=x_train.shape[1:]))
 model2.add(Conv2D(filters=32, kernel_size=(5,5), activation='relu'))
@@ -178,37 +192,39 @@ model2.add(Dense(256, activation='relu'))
 model2.add(Dropout(rate=0.5))
 model2.add(Dense(43, activation='softmax'))
 
+#Compiling the model
 model2.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model2.summary()
+```
 
-
-Architecture Summary:
-| Layer Type | Output Shape | Parameters | 
-| Conv2D (32 filters, 5×5) | (46, 46, 32) | 2,432 | 
-| Conv2D (32 filters, 5×5) | (42, 42, 32) | 25,632 | 
-| MaxPooling2D (2×2) | (21, 21, 32) | 0 | 
-| Dropout (0.25) | (21, 21, 32) | 0 | 
-| Conv2D (64 filters, 3×3) | (19, 19, 64) | 18,496 | 
-| Conv2D (64 filters, 3×3) | (17, 17, 64) | 36,928 | 
-| MaxPooling2D (2×2) | (8, 8, 64) | 0 | 
-| Dropout (0.25) | (8, 8, 64) | 0 | 
-| Flatten | (4096,) | 0 | 
-| Dense (256 neurons, ReLU) | (256,) | 1,048,832 | 
-| Dropout (0.5) | (256,) | 0 | 
-| Dense (43 neurons, Softmax) | (43,) | 11,051 | 
+*Architecture Summary (Model 2):*
+
+![Architecture Summary (Model 2)](images/6_model2_summary.png)
+
 
 
 Results:
 - Validation Accuracy: Approximately 99.06%.
 - Loss and accuracy curves showed steady convergence over 50 epochs.
-Insert evaluation graphs for Model 1 here:
-- Model 1 Loss Curve
-- Model 1 Accuracy Curve
-- Model 1 Confusion Matrix
+
+*Classification Report (Model 2)*
+
+|      | precision | recall | f1-score | support |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+| accuracy |    |    | 0.99 | 1806 |
+| macro avg | 0.99 | 0.99 | 0.99 | 1806 |
+| weighted avg | 0.99 | 0.99 | 0.99 | 1806 |
+
+*Model 2 Loss and Accuracy Plots*
+![Loss and Validation Plots (Model 2)](images/7_model2_lossandaccuracy_plots.png)
+
+
+*Model 2 Confusion Matrix*
+![Confusion Matrix (Model 2)](images/8_model2_CM.png)
 
 
 
-Training and Evaluation
+## Training and Evaluation
 Both models were trained for 50 epochs with the following common procedure. Here is an example training code snippet for Model 1:
 history = model2.fit(x_train, y_train,
                      epochs=50,
