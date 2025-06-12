@@ -92,10 +92,28 @@ An 80/20 split was performed to create training and validation sets.
 insert code
 ```
 
-## Model Architectures
+## Model Architectures - Training and evaluation
 Two CNN models were developed for this classification task. Both models share a similar pipeline consisting of convolutional layers, pooling layers, dropout layers for regularization, and dense layers for final classification. The details of each are outlined below.
 
-Model 1
+# Training and Evaluation
+Both models were trained for 50 epochs with the following common procedure. Here is an example training code snippet for Model 1:
+```python
+history = model.fit(x_train, y_train,
+                     epochs=50,
+                     validation_data=(x_test, y_test),
+                     verbose=2)
+```
+
+### Evaluating the model on the test set
+```python
+loss, accuracy = model2.evaluate(x_test, y_test)
+print('Model 1 Accuracy: {:.2f}%'.format(accuracy * 100))
+```
+
+### Evaluation Metrics
+After training, the models were evaluated using a confusion matrix and a detailed classification report, outputs presented below each model architecture.
+
+## Model 1 Architecture, Training and Evaluation
 Architecture Details:
 - Input:
 Images of shape (50, 50, 3).
@@ -155,7 +173,7 @@ Results:
 
 
 
-Model 2 (Model2)
+## Model 2 Architecture, Training and Evaluation
 Architecture Details:
 - Input:
 Image shape of (50, 50, 3).
@@ -223,34 +241,10 @@ Results:
 ![Confusion Matrix (Model 2)](images/8_model2_CM.png)
 
 
-
-## Training and Evaluation
-Both models were trained for 50 epochs with the following common procedure. Here is an example training code snippet for Model 1:
-history = model2.fit(x_train, y_train,
-                     epochs=50,
-                     validation_data=(x_test, y_test),
-                     verbose=2)
-
-# Evaluate the model on the test set
-loss, accuracy = model2.evaluate(x_test, y_test)
-print('Model 1 Accuracy: {:.2f}%'.format(accuracy * 100))
-
-
-Evaluation Metrics
-After training, the models were evaluated using a confusion matrix and a detailed classification report. For example:
-from sklearn.metrics import confusion_matrix, classification_report
-import numpy as np
-
-y_pred = model2.predict(x_test)
-y_pred_classes = np.argmax(y_pred, axis=1)
-cm = confusion_matrix(y_test, y_pred_classes)
-print(classification_report(y_test, y_pred_classes))
-
-
-Insert image of the confusion matrix and sample classification report here.
-
-Testing with New Images
+# Testing with New Images
 A custom prediction pipeline was developed to scale and predict on new traffic sign images. The following code snippet shows how a test image is processed and evaluated:
+
+```python
 import random
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -273,7 +267,9 @@ random_image = test_images[random_index].reshape(1, 50, 50, 3)
 
 prediction_model2 = model2.predict(random_image)
 predicted_class_model2 = np.argmax(prediction_model2, axis=1)
+```
 
+```python
 # Mapping of class indices to traffic sign labels
 all_labels = ['Speed limit (20km/h)', 'Speed limit (30km/h)', 'Speed limit (50km/h)', 'Speed limit (60km/h)', 
               'Speed limit (70km/h)', 'Speed limit (80km/h)', 'End of speed limit (80km/h)', 'Speed limit (100km/h)', 
@@ -295,11 +291,15 @@ print("Model 2 Prediction:", all_labels[predicted_class_model2[0]])
 plt.imshow(test_images[random_index])
 plt.title("Traffic Sign Test Image")
 plt.show()
+```
 
 
 Insert a sample test image with prediction results here.
+#explain the two sample codes above in detail.
 
-Conclusion
+display 
+
+# Conclusion
 Two different CNN architectures were developed for traffic sign classification.
 - Model 1 (with two stacks of convolutional layers and extensive dropout) achieved a validation accuracy of approximately 99.06%.
 - Model 2 (a slightly simpler architecture with 64-filter layers and high dropout rates) achieved around 98.45% accuracy.
@@ -308,13 +308,26 @@ Future work could incorporate further hyperparameter tuning, data augmentation t
 
 
 
+# Conclusion (expand on the conclusion - include why model 2 performed better than 1)
+Two distinct CNN architectures were developed for traffic sign classification:
+- Model 1: Achieved a validation accuracy of approximately 98.45%.
+- Model 2: Achieved a validation accuracy of approximately 99.06%.
+Both models showed robust performance, with steady convergence and high precision across 43 classes. Future enhancements could include hyperparameter tuning, data augmentation, and real-time implementation to further improve performance.
 
 
 
 
 
 
-###Traffic Sign Classification
+
+
+
+
+
+
+
+
+***###Traffic Sign Classification
 Traffic Sign Classification Using Convolutional Neural Networks
 Overview
 This project tackles the problem of traffic sign classification with the objective of automatically recognizing and labeling images into one of 43 distinct classes. Two different convolutional neural network (CNN) models were developed—each with its own architecture design—and trained and evaluated using TensorFlow and Keras. The workflow involved extensive data preprocessing (balancing, resizing, and normalization), model design, training, performance evaluation, and testing on real-world images.
@@ -464,105 +477,5 @@ Results:
 <!-- Insert evaluation graphs for Model 2 below -->
 Model 2 Loss Curve
 Model 2 Accuracy Curve
-Model 2 Confusion Matrix
+Model 2 Confusion Matrix***
 
-Training and Evaluation Procedure
-Both models were trained for 50 epochs. Below is an example of the training pipeline using Model 1:
-history = model2.fit(x_train, y_train,
-                     epochs=50,
-                     validation_data=(x_test, y_test),
-                     verbose=2)
-
-# Evaluate on the test set
-loss, accuracy = model2.evaluate(x_test, y_test)
-print('Model 1 Accuracy: {:.2f}%'.format(accuracy * 100))
-
-
-For evaluation, a confusion matrix and detailed classification report were generated:
-from sklearn.metrics import confusion_matrix, classification_report
-import numpy as np
-
-y_pred = model2.predict(x_test)
-y_pred_classes = np.argmax(y_pred, axis=1)
-cm = confusion_matrix(y_test, y_pred_classes)
-print(classification_report(y_test, y_pred_classes))
-
-
-<!-- Include a high-resolution confusion matrix and a snippet of the classification report as images -->
-Confusion Matrix
-
-Testing with New Images
-A pipeline was built to process new images and generate predictions. The following code snippet demonstrates how test images are scaled and evaluated:
-import random
-from PIL import Image
-import matplotlib.pyplot as plt
-
-def scaling(test_images, test_path):
-    images = []
-    for x in test_images:
-        img = Image.open(test_path + '/' + x)
-        img = img.resize((50,50))
-        img = np.array(img)
-        images.append(img)
-    return np.array(images) / 255  # Normalization
-
-# .
-test_images = scaling(sorted(os.listdir(test_path)), test_path)
-
-# Select a random test image
-random_index = random.randint(0, len(test_images) - 1)
-random_image = test_images[random_index].reshape(1, 50, 50, 3)
-
-prediction_model2 = model2.predict(random_image)
-predicted_class_model2 = np.argmax(prediction_model2, axis=1)
-
-# Mapping class indices to traffic sign labels
-all_labels = [
-    'Speed limit (20km/h)', 'Speed limit (30km/h)', 'Speed limit (50km/h)',
-    'Speed limit (60km/h)', 'Speed limit (70km/h)', 'Speed limit (80km/h)',
-    'End of speed limit (80km/h)', 'Speed limit (100km/h)', 'Speed limit (120km/h)',
-    'No passing', 'No passing for vehicles over 3.5 metric tons',
-    'Right-of-way at the next intersection', 'Priority road', 'Yield', 'Stop', 'No vehicles',
-    'Vehicles over 3.5 metric tons prohibited', 'No entry', 'General caution',
-    'Dangerous curve to the left', 'Dangerous curve to the right', 'Double curve', 'Bumpy road',
-    'Slippery road', 'Road narrows on the right', 'Road work', 'Traffic signals', 'Pedestrians',
-    'Children crossing', 'Bicycles crossing', 'Beware of ice/snow', 'Wild animals crossing',
-    'End of all speed and passing limits', 'Turn right ahead', 'Turn left ahead', 'Ahead only',
-    'Go straight or right', 'Go straight or left', 'Keep right', 'Keep left', 'Roundabout mandatory',
-    'End of no passing', 'End of no passing by vehicles over 3.5 metric tons'
-]
-
-print("True Label:", all_labels[y_test[random_index]])
-print("Model 1 Prediction:", all_labels[np.argmax(model.predict(random_image), axis=1)[0]])
-print("Model 2 Prediction:", all_labels[predicted_class_model2[0]])
-
-# Display the test image
-plt.imshow(test_images[random_index])
-plt.title("Traffic Sign Test Image")
-plt.show()
-
-
-<!-- Insert a sample test image with prediction results below -->
-Test Image with Predictions
-
-Conclusion
-Two distinct CNN architectures were developed for traffic sign classification:
-- Model 1: Achieved a validation accuracy of approximately 99.06%.
-- Model 2: Achieved a validation accuracy of approximately 98.45%.
-Both models showed robust performance, with steady convergence and high precision across 43 classes. Future enhancements could include hyperparameter tuning, data augmentation, and real-time implementation to further improve performance.
-
-
-############################################################
-Example of resizing and normalizing an image
-def preprocess_image(image_path, size=(50,50)):
-    img = Image.open(image_path)
-    img = img.resize(size)
-    img = np.array(img)
-    # Normalize pixel values to [0, 1]
-    return img / 255############
-
-########## Displaying a sample processed image (update with the actual file path)
-sample_image = preprocess_image('path/image.png')
-Insert sample image here:
-![Sample Preprocessed Image](images/sample_preprocessed.png)
-##############################################################
